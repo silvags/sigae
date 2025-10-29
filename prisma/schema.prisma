@@ -1,0 +1,175 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Prisma schema para SIGAE - Sistema Integrado de Gestão do projeto Adote uma Escola
+// PostgreSQL + PostGIS habilitado
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//
+// ========================= ENUMS =========================
+//
+
+enum Papel {
+  ADMIN
+  NEAS
+  DERS
+  DRS
+  ESCOLA
+  DOADOR
+  DIREP
+  SUPIN
+  SUPAD
+}
+
+enum TipoDoador {
+  PESSOA_FISICA
+  PESSOA_JURIDICA
+}
+
+enum FrequenciaColeta {
+  SEMANAL
+  QUINZENAL
+  MENSAL
+  EXTRA
+}
+
+enum StatusAgendamento {
+  PENDENTE
+  CONFIRMADO
+  CANCELADO
+  CONCLUIDO
+}
+
+enum SituacaoEscola {
+  ATIVA
+  SUSPENSA
+  EXCLUIDA
+}
+
+//
+// ========================= MODELOS =========================
+//
+
+model Setor {
+  id        Int       @id @default(autoincrement())
+  nome      String
+  descricao String?
+  usuarios  Usuario[]
+}
+
+model Usuario {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  matricula    String        @unique
+  email        String        @unique
+  senha        String
+  cargo        String?
+  setorId      Int?
+  setor        Setor?        @relation(fields: [setorId], references: [id])
+  papel        Papel
+  autorizacoes Agendamento[] @relation("UsuarioAutorizacoes")
+}
+
+//
+// ======== ESCOLAS E DOADORES ========
+//
+
+model Escola {
+  id           Int                                   @id @default(autoincrement())
+  numTermo     String                                @unique
+  cnpj         String                                @unique
+  nome         String
+  endereco     String?
+  telefone     String?
+  email        String?
+  latitude     Float?
+  longitude    Float?
+  localizacao  Unsupported("geometry(Point, 4326)")? @map("geom")
+  situacao     SituacaoEscola                        @default(ATIVA)
+  coletas      Coleta[]
+  doadores     Doador[]
+  agendamentos Agendamento[]
+}
+
+model Doador {
+  id       Int        @id @default(autoincrement())
+  nome     String
+  tipo     TipoDoador
+  cpfCnpj  String?    @unique
+  endereco String?
+  telefone String?
+  email    String?
+  escolaId Int?
+  escola   Escola?    @relation(fields: [escolaId], references: [id])
+  coletas  Coleta[]
+}
+
+//
+// ======== COOPERATIVAS E DESTINOS ========
+//
+
+model Cooperativa {
+  id       Int                 @id @default(autoincrement())
+  nome     String
+  cnpj     String?             @unique
+  endereco String?
+  telefone String?
+  email    String?
+  ativa    Boolean             @default(true)
+  destinos DestinoReciclavel[]
+}
+
+model DestinoReciclavel {
+  id            Int         @id @default(autoincrement())
+  dataDestino   DateTime    @default(now())
+  quantidadeKg  Float
+  cooperativaId Int
+  cooperativa   Cooperativa @relation(fields: [cooperativaId], references: [id])
+  coletaId      Int?
+  coleta        Coleta?     @relation(fields: [coletaId], references: [id])
+  observacao    String?
+}
+
+//
+// ======== COLETAS E AGENDAMENTOS ========
+//
+
+model Coleta {
+  id            Int                 @id @default(autoincrement())
+  dataColeta    DateTime
+  quantidadeKg  Float
+  escolaId      Int?
+  escola        Escola?             @relation(fields: [escolaId], references: [id])
+  doadorId      Int?
+  doador        Doador?             @relation(fields: [doadorId], references: [id])
+  agendamentoId Int?
+  agendamento   Agendamento?        @relation(fields: [agendamentoId], references: [id])
+  destinos      DestinoReciclavel[]
+}
+
+model Agendamento {
+  id              Int               @id @default(autoincrement())
+  tipo            String // "COLETA", "PALESTRA", "EDUCACAO_AMBIENTAL", etc.
+  diaSemana       String?
+  frequencia      FrequenciaColeta?
+  dataInicio      DateTime?
+  dataFim         DateTime?
+  observacao      String?
+  status          StatusAgendamento @default(PENDENTE)
+  escolaId        Int?
+  escola          Escola?           @relation(fields: [escolaId], references: [id])
+  autorizadoPorId Int?
+  autorizadoPor   Usuario?          @relation("UsuarioAutorizacoes", fields: [autorizadoPorId], references: [id])
+  coletas         Coleta[]
+}
