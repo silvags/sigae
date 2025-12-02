@@ -17,24 +17,93 @@ Seu foco principal é:
 
 ---
 
-## 🏗️ Arquitetura Geral
-
-### **Backend**
-- **Node.js**
-- **TypeScript**
-- **Prisma ORM**
-- **PostgreSQL** + **PostGIS**
-- REST API modular
-
-### **Frontend**
-*(A ser definido – previsão: React, Next.js, Vue, Angular ou outro framework moderno)*
-
-### **Infraestrutura**
-- Banco de dados PostgreSQL com extensão PostGIS ativada
-- Implementação modular para facilitar manutenção e evolução
-- Suporte para migrações Prisma
+## 🏗️ Arquitetura do Projeto
+- **Backend:** Node.js • TypeScript • NestJS  
+- **ORM:** Prisma  
+- **Banco de dados:** PostgreSQL + PostGIS  
+- **Autenticação:** JWT + RBAC  
+- **API:** REST (expansível para GraphQL)  
+- **Padrões:** Clean Architecture • Services/Repositories • DTOs
 
 ---
+
+## 📦 Tecnologias Principais
+- 🚀 **Node.js**
+- 🧩 **NestJS**
+- 🗄️ **PostgreSQL**
+- 🗺️ **PostGIS**
+- 🧭 **Prisma ORM**
+- 📝 **TypeScript**
+  
+---
+
+## 🧱 Estrutura de Pastas
+
+```bash
+sigae/
+├── prisma/                 
+│   ├── schema.prisma       
+│   └── migrations/         
+├── src/
+│   ├── common/             
+│   ├── config/             
+│   ├── modules/            
+│   │   ├── auth/           
+│   │   ├── users/
+│   │   ├── escolas/
+│   │   ├── parceiros/
+│   │   ├── geolocalizacao/
+│   │   └── relatorios/
+│   ├── app.module.ts       
+│   └── main.ts             
+├── tests/                  
+├── Dockerfile                  
+└── README.md
+
+---
+
+## 📚 Módulos do Sistema
+
+### 🔐 Auth
+- JWT Access/Refresh  
+- RBAC via Decorators + Guards  
+- Controle de sessão
+
+### 👤 Users
+- CRUD  
+- Perfis e papéis  
+- Relacionamento com escolas e parceiros
+
+### 🏫 Escolas
+- Cadastro  
+- Validação de dados  
+- Geometria (POINT) via PostGIS
+
+### 🤝 Parceiros / Adoções
+- Cadastro de parceiros  
+- Associação escola ↔ parceiro  
+- Controle de status
+
+### 📍 Geolocalização
+- Filtros espaciais  
+- Distâncias  
+- Suporte a índices GiST
+
+### 📊 Relatórios
+- Dados consolidados  
+- Estatísticas  
+- Exportações futuras
+
+---
+
+## 🔧 Requisitos
+- Node.js 20+  
+- PostgreSQL 15+  
+- PostGIS 3+  
+- Docker (opcional)
+
+---
+
 ## ✅ Próximos Passos
 - Documentar procedimentos de instalação  
 - Criar exemplos de requisições (HTTP e via Prisma)  
