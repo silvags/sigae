@@ -5,7 +5,8 @@
 
 ## 📌 Objetivo do Projeto
 
-O **SIGAE** (Sistema Integrado de Gestão do Projeto Adote uma Escola) é uma plataforma modular destinada ao acompanhamento operacional, ambiental e administrativo das ações realizadas nas escolas e empresas doadoras parceiras.  
+O projeto Adote uma Escola é um projeto que visa a geração de emprego e renda para os atadores das Cooperativas conveniadas com o Serviço Autônomo de Saneamento de Pelotas (SANEP) e trabalhar a separação e descarte ambiental de resíduos com a comunidade escolar - alunos, professores e famílias - nas escolas parceiras do projeto.
+O **SIGAE** (Sistema Integrado de Gestão do Projeto Adote uma Escola) é uma plataforma modular destinada ao acompanhamento operacional, ambiental e administrativo das ações realizadas nas escolas e parcerias entre escolas e empresas doadoras de resíduos recicláveis.  
 Seu foco principal é:
 
 - Gerenciar coletas de materiais recicláveis em escolas e doadores;  
